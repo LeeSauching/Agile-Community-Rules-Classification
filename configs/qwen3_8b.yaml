@@ -8,8 +8,8 @@ max_seq_len: 256
 train:
   epochs: 1
   lr: 2e-4
-  per_device_batch_size: 8  # 注意这里是 8
-  grad_accum_steps: 2       # 注意这里是 2
+  per_device_batch_size: 8
+  grad_accum_steps: 2
   fp16: true
   bf16: true
 
