@@ -1,0 +1,25 @@
+model_name: "phi4-14b"
+base_model_path: "./input/phi4-14b/phi-4-unsloth-bnb-4bit"
+output_dir: "./output/phi4_train"
+
+seed: 204
+max_seq_len: 256
+
+train:
+  epochs: 1
+  lr: 2e-4
+  per_device_batch_size: 4
+  grad_accum_steps: 4
+  fp16: true
+  bf16: true # 只有显卡支持时生效，代码里会有检测逻辑
+
+lora:
+  r: 16
+  alpha: 32
+  dropout: 0.05
+  target_modules: ["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"]
+
+data:
+  dd_method: "no_subreddit"
+  max_upsample_ratio: 2.0
+  system_prompt_id: 2 # 对应你列表里的第3个prompt
