@@ -1,3 +1,6 @@
+import pandas as pd
+from datasets import Dataset as HFDataset
+
 def load_and_expand() -> pd.DataFrame:
     comp_dir = CFG.comp_dir
     train_dataset = pd.read_csv(f"{comp_dir}/train.csv")
