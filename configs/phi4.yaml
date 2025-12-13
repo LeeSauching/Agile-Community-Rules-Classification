@@ -1,5 +1,6 @@
 model_name: "phi4-14b"
 base_model_path: "./input/phi4-14b/phi-4-unsloth-bnb-4bit"
+input_dir: "./input/"
 output_dir: "./output/phi4_train"
 
 seed: 204
@@ -8,8 +9,8 @@ max_seq_len: 256
 train:
   epochs: 1
   lr: 2e-4
-  per_device_batch_size: 4
-  grad_accum_steps: 4
+  per_device_train_batch_size: 4
+  gradient_accumulation_steps: 4
   fp16: true
   bf16: true # 只有显卡支持时生效，代码里会有检测逻辑
 
@@ -23,3 +24,20 @@ data:
   dd_method: "no_subreddit"
   max_upsample_ratio: 2.0
   system_prompt_id: 2 # 对应你列表里的第3个prompt
+
+eval_strategy: "epoch"
+save_strategy: "epoch"
+
+val_ratio: 0.0
+
+prompt_variants: [
+    "You are given a Reddit comment and a moderation rule. Classify if the comment violates the rule. Only respond Yes/No.",
+    "Given a Reddit comment and a specific rule from the subreddit, decide if the comment breaks the rule. Only answer Yes or No.",
+    "Decide if the Reddit comment violates the rule. Reply strictly with Yes or No.",
+]
+pid: 2
+judge_words: "Violation:"
+positive: "Yes"
+negative: "No"
+
+max_upsample_ratio: 2.0
