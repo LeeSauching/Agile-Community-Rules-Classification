@@ -11,23 +11,6 @@ def make_lora_config() -> LoraConfig:
         task_type="CAUSAL_LM",
     )
 
-def load_model_and_tokenizer(model_path):
-    model, tokenizer = FastLanguageModel.from_pretrained(
-        model_name = model_path,
-        max_seq_length = CFG.max_seq_len,
-        load_in_4bit = True,
-        load_in_8bit = False,
-        full_finetuning = False,
-        local_files_only= True,
-    )
-    print(f"tokenizer.pad_token: {tokenizer.pad_token}, tokenizer.eos_token: {tokenizer.eos_token}")
-    print(f"tokenizer.pad_token_id: {tokenizer.pad_token_id}, tokenizer.eos_token_id: {tokenizer.eos_token_id}")
-
-    tokenizer.truncation_side = "left" 
-    tokenizer.padding_side    = "right"
-
-    return model, tokenizer
-
 def load_model_and_tokenizer(model_path, max_seq_len, load_in_4bit=True):
     model, tokenizer = FastLanguageModel.from_pretrained(
         moadel_name = model_path,
