@@ -1,5 +1,6 @@
 from unsloth import FastLanguageModel
 from unsloth.chat_templates import get_chat_template
+from trl import SFTTrainer, SFTconfig
 
 def make_lora_config() -> LoraConfig:
     return LoraConfig(
@@ -49,3 +50,24 @@ def get_lora_model(model, cfg):
     model.print_trainable_parameters()
 
     return model
+
+def get_trainer(model, tokenizer, train_dataset, val_dataset, cfg):
+    args = SFTconfig(
+        output_dir = cfg.output_dir,
+        num_train_epochs = cfg.train.epochs,
+        per_device_train_batch_size = cfg.train.per_device_batch_size,
+        gradient_accumulation_steps = cfg.train.grad_accum_steps,
+        learning_rate = float(cfg.train.lr),
+        fp16 = not cfg.train.bf16,
+        bf16 = cfg.train.bf16,
+        logging_steps = 10,
+
+        eval_strategy = "epoch" if val_dataset else "no",
+        save_strategy = "epoch" if val_dataset else "no",
+        save_total_limit = 1,
+
+        max_seq_length = cfg.max_seq_len,
+        dataset_text_field = "text",
+        packing = False,
+        report_to = "none"
+    )
