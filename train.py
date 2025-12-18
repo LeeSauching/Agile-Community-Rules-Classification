@@ -24,7 +24,7 @@ def main():
 
 	os.makedirs(cfg['output_dir'], exist_ok = True)
 
-	logger.info(f"=== Starting Training: {cfg.model_name} ===")
+	logger.info(f"=== Starting Training: {cfg['model_name']} ===")
 
 	logger.info("Loading and processing data...")
 
@@ -36,14 +36,18 @@ def main():
     df, test_df = load_and_expand()
     train_df, val_df = train_val_split(df, cfg['data']['val_ratio'], cfg['seed'])
 	logger.info(f"Train size: {len(train_df)}, Val size: {len(val_df)}")
+	train_hf = build_hf_dataset(train_df, tokenizer, primary_system_prompt, use_log=True)
+	val_hf   = build_hf_dataset(val_df,   tokenizer, primary_system_prompt, use_log=False) if len(val_df)>0 else None
 
-	logger.info(f"Loading base model from: {cfg.base_model_path}")
+	logger.info(f"Loading base model from: {cfg['base_model_path']}")
 	model, tokenizer = load_model_and_tokenizer(cfg['base_model_path'], cfg['max_seq_len'])
 
 	logger,info("Applying LoRA adapters...")
 	model = get_lora_model(model, cfg)
 
 	system_prompt = cfg["prompt_variants"]
+
+	trainer = get_trainer(model, tokenizer, train_hf, vak_hf, cfg)
 
 	logger.info("Starting training...")
 	trainer_stats = trainer.train()
