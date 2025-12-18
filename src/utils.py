@@ -49,3 +49,7 @@ def load_config(yaml_path):
         cfg_dict = yaml.safe_load(f)
 
     cfg = _recursive_namespace(cfg_dict)
+    print(f"Loaded config from {yaml_path}")
+    print(json.dumps(cfg_dict, indent=2, ensure_ascii=False))
+    
+    return cfg
