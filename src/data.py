@@ -1,8 +1,13 @@
 import pandas as pd
+import numpy as np
 from datasets import Dataset as HFDataset
+from sklearn.model_selection import StratifiedKFold
+import logging
 
-def load_and_expand() -> pd.DataFrame:
-    comp_dir = CFG.comp_dir
+LOGGER = logger.getLogger(__name__)
+
+def load_and_expand(CFG) -> pd.DataFrame:
+    comp_dir = CFG.input_dir
     train_dataset = pd.read_csv(f"{comp_dir}/train.csv")
     test_dataset  = pd.read_csv(f"{comp_dir}/test.csv")
 
