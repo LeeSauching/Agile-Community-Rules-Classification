@@ -2,11 +2,11 @@ from unsloth import FastLanguageModel
 from unsloth.chat_templates import get_chat_template
 from trl import SFTTrainer, SFTconfig
 
-def make_lora_config() -> LoraConfig:
+def make_lora_config(CFG) -> LoraConfig:
     return LoraConfig(
-        r=CFG.lora_r,
-        lora_alpha=CFG.lora_alpha,
-        lora_dropout=CFG.lora_dropout,
+        r=CFG['lora_r'],
+        lora_alpha=CFG['lora_alpha'],
+        lora_dropout=CFGlora_dropout,
         bias="none",
         target_modules=["q_proj","k_proj","v_proj","o_proj","gate_proj","up_proj","down_proj"],
         task_type="CAUSAL_LM",
@@ -39,13 +39,13 @@ def load_model_and_tokenizer(model_path, max_seq_len, load_in_4bit=True):
 def get_lora_model(model, cfg):
     model = FastLanguageModel.get_peft_model(
         model,
-        r = cfg.lora.r,
-        target_modules = cfg.lora.target_modules,
-        lora_alpha = cfg.lora.alpha,
-        lora_dropout = cfg.lora.dropout,
+        r = cfg['lora']['r'],
+        target_modules = cfg['lora']['target_modules'],
+        lora_alpha = cfg['lora']['alpha'],
+        lora_dropout = cfg['lora']['dropout'],
         bias = "none",
         use_gradient_checkpointing = "unsloth",
-        random_state = cfg.seed,
+        random_state = cfg['seed'],
     )
     model.print_trainable_parameters()
 
@@ -53,13 +53,13 @@ def get_lora_model(model, cfg):
 
 def get_trainer(model, tokenizer, train_dataset, val_dataset, cfg):
     args = SFTconfig(
-        output_dir = cfg.output_dir,
-        num_train_epochs = cfg.train.epochs,
-        per_device_train_batch_size = cfg.train.per_device_batch_size,
-        gradient_accumulation_steps = cfg.train.grad_accum_steps,
-        learning_rate = float(cfg.train.lr),
-        fp16 = not cfg.train.bf16,
-        bf16 = cfg.train.bf16,
+        output_dir = cfg['output_dir'],
+        num_train_epochs = cfg['train']['epochs'],
+        per_device_train_batch_size = cfg['train.per_device_batch_size'],
+        gradient_accumulation_steps = cfg['train.grad_accum_steps'],
+        learning_rate = float(cfg['train']['lr']),
+        fp16 = not cfg['train']['bf16'],
+        bf16 = cfg['train']['bf16'],
         logging_steps = 10,
 
         eval_strategy = "epoch" if val_dataset else "no",
